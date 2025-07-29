@@ -1,0 +1,94 @@
+services:
+    nginx:
+        image: nginx:alpine
+        container_name: ${PREFIX}-${NGINX_CONTAINER}
+        volumes:
+            - ./docker/nginx/conf/default.template.conf:/etc/nginx/conf.d/default.template:cached
+            - ./:/app:delegated
+            - .env:/app/.env:cached
+            - ./html:/html:cached
+        ports:
+            - ${NGINX_EXT_PORT}:${NGINX_PORT}
+            - ${NGINX_SSL_EXT_PORT}:${NGINX_SSL_PORT}
+        environment:
+            - NGINX_HOST=${NGINX_HOST}
+        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+        restart: always
+        working_dir: /app
+        env_file:
+            - .env
+        depends_on:
+            - php
+            - db
+        networks:
+            matveev-network:
+                ipv4_address: ${NGINX_IP}
+
+    php:
+        build:
+            context: ./
+            dockerfile: ./docker/php/Dockerfile
+        container_name: ${PREFIX}-${PHP_CONTAINER}
+        restart: always
+        volumes:
+            - ~/.composer-docker/cache:/root/.composer/cache:delegated
+            - ./:/app:cached
+            - .env:/app/.env:cached
+        working_dir: /app
+        networks:
+            matveev-network:
+                ipv4_address: ${PHP_IP}
+        depends_on:
+            db:
+                condition: service_healthy
+
+    db:
+        image: mysql:8.4
+        container_name: ${PREFIX}-${DB_CONTAINER}
+        env_file:
+            - .env
+        ports:
+            - ${DB_EXT_PORT}:${DB_PORT}
+        environment:
+            - MARIADB_ROOT_PASSWORD=${DB_PASSWORD}
+            - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+            - MYSQL_DATABASE=${DB_NAME}
+            - MYSQL_USER=${DB_USER}
+            - MYSQL_PASSWORD=${DB_PASSWORD}
+        volumes:
+            - ./data/db:/var/lib/mysql:delegated
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-p${DB_PASSWORD}"]
+            interval: 10s
+            timeout: 20s
+            retries: 10
+        restart: unless-stopped
+        networks:
+            matveev-network:
+                ipv4_address: ${DB_IP}
+
+    swagger:
+        image: swaggerapi/swagger-ui
+        container_name: ${PREFIX}-${SWAGGER_CONTAINER}
+        env_file:
+            - .env
+        ports:
+            - ${SWAGGER_EXT_PORT}:${SWAGGER_PORT}
+        volumes:
+            - .env:/swagger/.env:cached
+            - ./docker/swagger/swagger.yml:/swagger/swagger.yml:cached
+        environment:
+            SWAGGER_JSON: ${SWAGGER_YAML}
+        depends_on:
+            - php
+        networks:
+            matveev-network:
+                ipv4_address: ${SWAGGER_IP}
+
+networks:
+    matveev-network:
+        driver: bridge
+        ipam:
+            config:
+            - subnet: "${SUBNET_IP}/${SUBNET_MASK}"
+              gateway: ${GATEWAY}

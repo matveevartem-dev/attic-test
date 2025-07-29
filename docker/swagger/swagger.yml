@@ -1,0 +1,69 @@
+openapi: '3.0.2'
+info:
+  title: Test Task API
+  version: '1.0'
+servers:
+  - url: http://localhost:8088/api
+paths:
+  /search:
+    tags: 
+      - Search
+    get:
+      summary: Search comments
+      description: Search comments  with TAG in query
+      tags: 
+        - Search
+      parameters:
+        - name: need
+          in: query
+          required: true
+          allowEmptyValue: false
+          description: Filters by comment content
+          schema:
+            type: string
+          example: laudanti
+      responses:
+        '200':
+          description: Successful request
+          content:
+            application/json:
+              example:
+                [
+                    {
+                        "id": 1,
+                        "title": "Body Title 1",
+                        "comments": {
+                          "2": {
+                                "id": 2,
+                                "body": "Comment Body Text 2",
+                                "name": "Comment Name 2",
+                                "email": "qwerty2@e.mail"
+                          },
+                          "21": {
+                                "id": 21,
+                                "body": "Comment Body Text 21",
+                                "name": "Comment Name 21",
+                                "email": "qwerty21@e.mail"
+                          },
+                        },
+                    }
+                ]
+components:
+  schemas:
+    ValueExample:
+      type: object
+      properties: 
+        # string example
+        StringProperty: 
+          type: string
+          title: "String Example"
+          description: "This is an example of a string property"
+          format: "string"
+          minLength: 3
+          maxLength: 10
+          pattern: "^[a-zA-Z]+$"
+          default: "default_value"
+          example: "example_value"
+          nullable: true
+          readOnly: false
+          writeOnly: false
