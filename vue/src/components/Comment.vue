@@ -1,36 +1,47 @@
 <script setup lang="ts">
   const props = defineProps({
-    comment: Object,
+    comment: Object
   })
 </script>
 
 <template>
-  <p class="name">{{ comment.name }}</p>
+  <div v-if="comment" class="comment">
+  <h6 class="name">{{ comment.name }}</h6>
   <p class="body">{{ comment.body }}</p>
   <p class="email">{{ comment.email }}</p>
+  </div>
 </template>
 
 <style scoped>
-  .comment > p {
-    margin-top: 1em;
-    margin-left: 1em;
+.comment {
+  margin-top: 0.5em;
+  margin-left: 1em;
+  padding-left: 1em;
+  border-bottom: 1px solid #7e8286;
+  width: calc(100% - 3em);
+
+  & p {
+    padding: 0;
   }
-  .comment > .name {
-    font-size: 0.9rem;
-    padding-top: 0.5em;
+
+  & .name {
+    font-size: 1.1em;
     margin-bottom: 0.5em;
-    color: #000;
+    color: #bfc6cd;
   }
-  .comment > .body {
-    font-size: 0.7rem;
-    padding-top: 0.5em;
+
+  & .body {
+    font-size: 1em;
     margin-bottom: 0.5em;
-    color: #000;
+    color: #a1a1a1;
+    overflow: auto;
+    text-overflow: ellipsis;
+    white-space: normal;
   }
-  .comment > .email {
-    font-size: 0.8rem;
-    padding-top: 0.5em;
-    margin-bottom: 0.5em;
-    color: #ce00ff;
+
+  & .email {
+    font-size: 0.8em;
+    color: #919191;
   }
+}
 </style>

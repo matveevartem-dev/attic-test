@@ -8,15 +8,24 @@
 
 <template>
   <div v-if="post" class="post">
-    <div class="title">{{ post.title }}</div>
-    <div v-for="comment in post.comments" class="comment">
+    <h5 class="title">{{ post.title }}</h5>
+    <div v-for="comment in post.comments" class="row">
       <Comment :comment="comment" />
     </div>
   </div>
 </template>
 
 <style scoped>
-  .comment {
-    border-bottom: 1px solid #aaa;
+.post {
+  background-color: #424242;
+  margin-top: 0.5rem;
+  padding: 1em;
+  border-radius: 10px;
+
+  & .title {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 1.5em;
+    font-weight: bold;
   }
+}
 </style>

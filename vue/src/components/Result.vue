@@ -3,25 +3,14 @@
 
   const props = defineProps({
     result: Array,
+    post: Object
   })
 </script>
 
 <template>
-    <div class="row">
-       <div v-for="post in result">
-          <div v-if="post" class="post">
-            <Post :post="post" />
-          </div>
-        </div>
-      </div>
+  <div v-for="post in result" class="row">
+    <div v-if="post">
+      <Post :post="post" />
+    </div>
+  </div>
 </template>
-
-<style scoped>
-  .post {
-    border-bottom: 1px solid #444;
-    margin-top: 1em;
-  }
-  .post > .title {
-    font-size: 1.5rem;
-  }
-</style>

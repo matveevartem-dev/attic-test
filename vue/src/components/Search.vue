@@ -36,18 +36,14 @@
 </script>
 
 <template>
-<div class="box">
   <div class="searchForm">
-    <input type="search" id="searchInput" class="searchInput" placeholder="Enter text here" v-model="form.searchQuery"/>
     <span class="searchIcon"><i class="fa fa-search"></i></span>
-    <input type="submit" id="submitButton" class="searchButton" @click="update(form.searchQuery)" v-model="form.submitButton"/>
+    <input type="search" id="searchInput" class="searchInput" placeholder="Enter text here" v-model="form.searchQuery"/>
+    <input type="submit" id="submitButton" class="searchButton" @click="update()" v-model="form.submitButton"/>
   </div>
-</div>
-<div class="box">
-  <div class="row">
+  <div class="resultSearch">
     <Result :result="result" />
   </div>
-</div>
 </template>
 
 <style scoped>
@@ -66,20 +62,19 @@
     font-size: 1rem;
     margin-top: auto;
     margin-bottom: auto;
-    right: 1.5rem;
+    left: 1.5rem;
   }
 
   & .searchInput {
     width: 50rem;
     height: 2rem;
     font-size: 1em;
-    float: left;
     color: #63717f;
     -webkit-border-radius: 0.5rem;
     -moz-border-radius: 0.5rem;
     border-radius: 0.5rem;
     padding-left: 2em;
-    padding-right: 2em;
+    padding-right: 0.1em;
     border-style: solid;
     border-width: 1px;
     box-shadow: 2px 2px 2px #4f5b66;;
@@ -102,11 +97,25 @@
       outline: none;
       background-color: #fff;
     }
+
+    &::-webkit-input-placeholder       {opacity: 1; transition: opacity 0.3s ease;}
+    &::-moz-placeholder                {opacity: 1; transition: opacity 0.3s ease;}
+    &:-moz-placeholder                 {opacity: 1; transition: opacity 0.3s ease;}
+    &:-ms-input-placeholder            {opacity: 1; transition: opacity 0.3s ease;}
+    &:focus::-webkit-input-placeholder {opacity: 0; transition: opacity 0.3s ease;}
+    &:focus::-moz-placeholder          {opacity: 0; transition: opacity 0.3s ease;}
+    &:focus:-moz-placeholder           {opacity: 0; transition: opacity 0.3s ease;}
+    &:focus:-ms-input-placeholder      {opacity: 0; transition: opacity 0.3s ease;}
+    &:hover::-webkit-input-placeholder {opacity: 0; transition: opacity 0.3s ease;}
+    &:hover::-moz-placeholder          {opacity: 0; transition: opacity 0.3s ease;}
+    &:hover:-moz-placeholder           {opacity: 0; transition: opacity 0.3s ease;}
+    &:hover:-ms-input-placeholder      {opacity: 0; transition: opacity 0.3s ease;}
   }
 
   & .searchButton {
     top: 50%;
-    height: 1.9rem;
+    height: 1.95rem;
+    margin-left: 1rem;
     border-radius: 10px;
     border-color: transparent;
     color: white;
@@ -116,11 +125,14 @@
     &:hover {
       box-shadow: 0 0 0 2px white, 0 0 0 4px #3C82F8;
     }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 }
 
-.searchResult {
-
+.resultSearch {
+  margin-top: 2rem;
 }
-
 </style>
