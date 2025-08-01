@@ -10,12 +10,12 @@
   body {
     display: flex;
     place-items: top,center;
+    background-color: #303030!important;
   }
 
   #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 2rem 2rem;
-    background-color: (128, 128, 128, 0.7);
   }
 }

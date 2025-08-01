@@ -8,14 +8,11 @@
 
   const form = reactive({
       searchQuery: '',
-      submitButton: 'Search'
+      submitButton: 'Search',
   })
-  
+
   const update = debounce(() => {
-    if (
-      form.searchQuery !== null && 
-      !(form.searchQuery.length < import.meta.env.VITE_MIN_SEARCH_LENGTH)
-    ) {
+    if (!searchBtnEnabled()) {
       axios.get(import.meta.env.VITE_API_URL + '/search', {
         params: {
           need: form.searchQuery,
@@ -33,13 +30,17 @@
   watch(form, debounce(() => {
       update();
   }, 500))
+
+  const searchBtnEnabled = () => {
+    return form.searchQuery !== null && form.searchQuery.length < import.meta.env.VITE_MIN_SEARCH_LENGTH;
+  }
 </script>
 
 <template>
   <div class="searchForm">
     <span class="searchIcon"><i class="fa fa-search"></i></span>
     <input type="search" id="searchInput" class="searchInput" placeholder="Enter text here" v-model="form.searchQuery"/>
-    <input type="submit" id="submitButton" class="searchButton" @click="update()" v-model="form.submitButton"/>
+    <input type="submit" id="submitButton" class="searchButton" @click="update()" :disabled="searchBtnEnabled()" v-model="form.submitButton"/>
   </div>
   <div class="resultSearch">
     <Result :result="result" />
@@ -121,6 +122,10 @@
     color: white;
     transition: .2s linear;
     background: #0B63F6;
+
+    &:disabled {
+      background-color: rgba(118, 118, 118);
+    }
 
     &:hover {
       box-shadow: 0 0 0 2px white, 0 0 0 4px #3C82F8;
