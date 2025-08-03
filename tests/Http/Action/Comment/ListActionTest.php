@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Http\Action\Post;
+namespace Tests\Http\Action\Comment;
 
 use App\Http\Action\Comment\ListAction;
 use App\Model\Comment\CommentRepository;

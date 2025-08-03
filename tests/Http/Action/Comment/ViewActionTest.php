@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Http\Action\Post;
+namespace Tests\Http\Action\Comment;
 
 use App\Http\Action\Comment\ViewAction;
 use App\Model\Comment\CommentRepository;
@@ -18,7 +18,7 @@ class ViewActionTest extends TestCase
 {
     use PrepareJsonDataTrait;
 
-    private int $postId = 1;
+    private int $commentId = 1;
 
     private Container $container;
     private CommentRepository $commentRepository;
@@ -46,13 +46,13 @@ class ViewActionTest extends TestCase
     public function testHandle()
     {
         $action = new ViewAction($this->commentRepository);
-        $response = $action->handle((new ServerRequest())->withAttribute('id', $this->postId));
+        $response = $action->handle((new ServerRequest())->withAttribute('id', $this->commentId));
         $expected = $this->prepareJsonData((string) (new JsonResponse($this->validPostData()))->getBody());
         $this->assertSame($expected, (string) $response->getBody());
     }
 
     /**
-     * @param int $postId
+     * @param int $commentId
      */
     public function testHandleThrowsPostNotFoundException(): void
     {

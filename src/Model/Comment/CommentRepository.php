@@ -8,6 +8,7 @@ use App\Model\Comment\Comment;
 use App\Infrastructure\Core\DatabaseInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query\ResultSetMapping;
+use HttpSoft\Basis\Exception\NotFoundHttpException;
 use PDO;
 use Psr\Container\ContainerInterface;
 
@@ -126,9 +127,17 @@ final class CommentRepository
         $stm->bindParam(':id', $id, PDO::PARAM_INT);
         $stm->execute();
 
-        $post = new Comment(...array_values($stm->fetch()));
+        $data = $stm->fetch();
 
-        return $post;
+        if ($data === false) {
+            throw new NotFoundHttpException(get_class($this->connection));
+        }
+
+        $comment = new Comment(...array_values(
+            $data
+        ));
+
+        return $comment;
     }
 
     /**

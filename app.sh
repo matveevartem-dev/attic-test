@@ -57,12 +57,20 @@ require() {
     docker exec "$PREFIX-$PHP_CONTAINER" composer install
 }
 
+update() {
+    docker exec "$PREFIX-$PHP_CONTAINER" composer update
+}
+
 migrate() {
     docker exec "$PREFIX-$PHP_CONTAINER" /app/bin/app.php migrate
 }
 
 import() {
     docker exec "$PREFIX-$PHP_CONTAINER" /app/bin/app.php import
+}
+
+test() {
+    docker exec "$PREFIX-$PHP_CONTAINER" vendor/phpunit/phpunit/phpunit
 }
 
 init () {
@@ -117,7 +125,7 @@ check_version() {
 }
 
 usage_message() {
-    echo -e "Usage: app.sh [\033[3minit|start|stop|status|migrate|require|keys\033[0m]"
+    echo -e "Usage: app.sh [\033[3minit|start|stop|status|migrate|require|update\033[0m]"
     help
     echo "Starting app.sh for the first time may take a few minutes"
     echo
@@ -133,7 +141,8 @@ help()
     echo -e "  status     Show status of application containers"
     echo -e "  migrate    Runs command ${bold}bin/app.php migrate ${normal} into ${bold}php${normal} container"
     echo -e "  import     Runs command ${bold}bin/app.php import ${normal} into ${bold}php${normal} container"
-    echo -e "  require    Runs command ${bold}composer update${normal} into ${bold}php${normal} container"
+    echo -e "  require    Runs command ${bold}composer install${normal} into ${bold}php${normal} container"
+    echo -e "  update    Runs command ${bold}composer update${normal} into ${bold}php${normal} container"
     echo
 }
 
@@ -158,6 +167,9 @@ case "$1" in
     require)
         require
         ;;
+    update)
+        update
+        ;;
     migrate)
         migrate
         ;;
@@ -166,6 +178,9 @@ case "$1" in
         ;;
     status)
         status
+        ;;
+    test)
+        test
         ;;
     *)
         usage_message
