@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace App\Model\Search;
 
-use App\Model\Post\Post;
 use App\Infrastructure\Core\DatabaseInterface;
+use App\Model\Search\SearchResult;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query\ResultSetMapping;
 use PDO;
 use Psr\Container\ContainerInterface;
-
-use App\Model\Search\SearchResult;
-use Elasticsearch\Endpoints\Eql\Search;
 
 use function array_values;
 

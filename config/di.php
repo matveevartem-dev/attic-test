@@ -6,6 +6,8 @@ use App\Infrastructure\Http\ApplicationFactory;
 use App\Infrastructure\Http\ErrorHandlerMiddlewareFactory;
 use App\Infrastructure\LoggerFactory;
 use App\Infrastructure\Core\Config;
+use App\Infrastructure\Core\CacheFactory;
+use App\Infrastructure\Core\CacheInterface;
 use App\Infrastructure\Core\ConfigInterface;
 use App\Infrastructure\Core\Container;
 use App\Infrastructure\Core\Database;
@@ -31,6 +33,7 @@ use Psr\Log\LoggerInterface;
 return [
     Application::class => ApplicationFactory::class,
     EmitterInterface::class => SapiEmitter::class,
+    CacheInterface::class => fn() => (new CacheFactory())->create(),
     ContainerInterface::class => Container::class,
     ConfigInterface::class => Config::class,
     DatabaseInterface::class => Database::class,

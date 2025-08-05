@@ -5,6 +5,7 @@ declare(strict_types=1);
 use HttpSoft\Basis\Application;
 use HttpSoft\ServerRequest\ServerRequestCreator;
 use App\Infrastructure\Core\Container;
+use App\Infrastructure\Core\RedisCache;
 use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../autoload.php';

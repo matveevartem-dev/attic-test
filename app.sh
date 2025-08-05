@@ -21,19 +21,23 @@ db_wait() {
 }
 
 docker_build() {
-    docker-compose --project-directory ./ -f ./docker/docker-compose.yml build
+    docker compose --project-directory ./ -f ./docker/docker-compose.yml build
 }
 
 docker_up() {
-    docker-compose --project-directory ./ -f ./docker/docker-compose.yml up -d
+    docker compose --project-directory ./ -f ./docker/docker-compose.yml up -d
 }
 
 docker_down() {
-    docker-compose --project-directory ./ -f ./docker/docker-compose.yml down
+    docker compose --project-directory ./ -f ./docker/docker-compose.yml down
 }
 
 docker_ps() {
-    docker-compose --project-directory ./ -f ./docker/docker-compose.yml ps
+    docker compose --project-directory ./ -f ./docker/docker-compose.yml ps
+}
+
+docker_exec() {
+    docker compose --project-directory ./ -f ./docker/docker-compose.yml exec
 }
 
 build() {

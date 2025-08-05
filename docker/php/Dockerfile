@@ -7,7 +7,7 @@ RUN apt update && apt -y upgrade
 ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
 
 RUN chmod uga+x /usr/local/bin/install-php-extensions && sync && \
-install-php-extensions apcu bcmath exif grpc intl opcache pdo pdo_mysql yaml zip
+    install-php-extensions apcu bcmath exif grpc intl opcache pdo pdo_mysql yaml zip redis
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
