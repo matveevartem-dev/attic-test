@@ -147,7 +147,7 @@ help()
     echo -e "  import     Runs command ${bold}bin/app.php import ${normal} into ${bold}php${normal} container"
     echo -e "  require    Runs command ${bold}composer install${normal} into ${bold}php${normal} container"
     echo -e "  update     Runs command ${bold}composer update${normal} into ${bold}php${normal} container"
-    echo -e "  test       Runs command ${bold}vendor/phpunit/phpunit/phpunit${normal} vendor/phpunit/phpunit/phpunit inside ${bold}php${normal} container"
+    echo -e "  test       Runs command ${bold}vendor/phpunit/phpunit/phpunit${normal} inside ${bold}php${normal} container"
     echo
 }
 
