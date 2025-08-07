@@ -45,8 +45,8 @@ final class SearchAction implements RequestHandlerInterface
         }
 
         $need = $queryParams['need'];
-        if (strlen($need) < 3) {
-            throw new BadRequestHttpException('The length of the `need` parameter must be 3 or more.');
+        if (strlen($need) < $_ENV['VITE_MIN_SEARCH_LENGTH']) {
+            throw new BadRequestHttpException('The length of the `need` parameter must be ' . $_ENV['VITE_MIN_SEARCH_LENGTH'] . ' or more.');
         }
 
         $hash = md5($need);

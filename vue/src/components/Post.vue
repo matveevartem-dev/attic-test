@@ -8,7 +8,8 @@
 
 <template>
   <div v-if="post" class="post">
-    <h5 class="title">{{ post.title }}</h5>
+    <div class="email">{{ post.email }}</div>
+    <div class="title">{{ post.title }}</div>
     <div v-for="comment in post.comments" class="row">
       <Comment :comment="comment" />
     </div>
@@ -21,6 +22,14 @@
   margin-top: 0.5rem;
   padding: 1em;
   border-radius: 10px;
+
+  & .email {
+    font-size: 0.8rem;
+    font-weight: 200;
+    color: #f4f4f4;
+    margin-bottom: 0;
+    text-align: end;
+  }
 
   & .title {
     color: rgba(255, 255, 255, 0.92);

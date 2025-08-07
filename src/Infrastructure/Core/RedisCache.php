@@ -39,15 +39,13 @@ class RedisCache implements CacheInterface
      */
     public function set(string $key, array|string $value, ?int $ttl = null): bool
     {
-        $ttl ??= (int) $_ENV['REDIS_TTL'];
+        $ttl ??= ((int) $_ENV['REDIS_TTL'] ?? 10);
 
         if (is_array($value)) {
             $value = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
         }
 
-        return
-            (bool) $this->redis->set($key, $value) &&
-            (bool) $this->redis->expire($key, $ttl);
+        return (bool) $this->redis->setex($key, $ttl, $value);
     }
 
     /**

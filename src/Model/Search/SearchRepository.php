@@ -34,17 +34,20 @@ final class SearchRepository
     {
         $query = <<<SQL
             SELECT
-            c.post_id pid,
-            p.title,
-            JSON_OBJECTAGG(
-                c.id,
-                JSON_OBJECT('id', c.id, 'email', c.email, 'name', c.name, 'body', c.body)
-            ) comments
+                c.post_id pid,
+                p.title title,
+                i.email email,
+                JSON_OBJECTAGG(
+                    c.id,
+                    JSON_OBJECT('id', c.id, 'email', c.email, 'name', c.name, 'body', c.body)
+                ) comments
             FROM comment c
             JOIN post p
-            ON p.id = c.post_id
+                ON p.id = c.post_id
+            JOIN identity i
+                ON i.uid = p.user_id
             WHERE
-            MATCH (c.body) AGAINST (:need IN BOOLEAN MODE)
+                MATCH (c.body) AGAINST (:need IN BOOLEAN MODE)
             GROUP BY c.post_id;
         SQL;
 
@@ -67,6 +70,7 @@ final class SearchRepository
         return [
             'id' => $item['pid'],
             'title' => $item['title'],
+            'email' => $item['email'],
             'comments' => json_decode($item['comments'])
         ];
     }
