@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { reactive, watch, ref } from 'vue'
+  import { debounceFilter, watchWithFilter } from '@vueuse/core'
   import debounce from 'lodash/debounce'
   import axios from 'axios'
   import Result from './Result.vue'
@@ -11,7 +12,7 @@
       submitButton: 'Search',
   })
 
-  const update = debounce(() => {
+  const update = () => {
     if (!searchBtnEnabled()) {
       axios.get(import.meta.env.VITE_API_URL + '/search', {
         params: {
@@ -25,15 +26,19 @@
          result.value = [];
       })
     }
-  }, 500)
-
-  watch(form, debounce(() => {
-      update();
-  }, 500))
+  }
 
   const searchBtnEnabled = () => {
     return form.searchQuery !== null && form.searchQuery.length < import.meta.env.VITE_MIN_SEARCH_LENGTH;
   }
+
+  watchWithFilter(
+    form,
+    () => { update() },
+    {
+      eventFilter: debounceFilter(500, { maxWait: 1000 })
+    }
+  )
 </script>
 
 <template>
