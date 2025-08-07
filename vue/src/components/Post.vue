@@ -27,5 +27,11 @@
     font-size: 1.5em;
     font-weight: bold;
   }
+
+  & .row:last-child {
+    .comment {
+      border-bottom: none;
+    }
+  }
 }
 </style>
