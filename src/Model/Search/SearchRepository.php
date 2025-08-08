@@ -30,8 +30,11 @@ final class SearchRepository
     /**
      * @return SearchResult[]
      */
-    public function search(string $need): array
-    {
+    public function search(
+        string $need,
+        int $offset = 0,
+        int $limit = 9223372036854775807
+    ): array {
         $query = <<<SQL
             SELECT
                 c.post_id pid,
@@ -48,7 +51,8 @@ final class SearchRepository
                 ON i.uid = p.user_id
             WHERE
                 MATCH (c.body) AGAINST (:need IN BOOLEAN MODE)
-            GROUP BY c.post_id;
+            GROUP BY c.post_id
+            LIMIT {$offset}, {$limit};
         SQL;
 
         $stm = $this->connection->prepare($query);
