@@ -6,7 +6,7 @@
 # Задачи
 
 - [SQL файл для создания базы данных](sql_database_create_tables.sql)  
-- Backend: ***PHP 8.4.10***, ***MySQL 8.4.6***  
+- Backend: ***PHP 8.4.10***, ***MySQL 8.4.6***, ***Redis 8.2.0***  
 - Frontend: ***Vue 3.5.17***  
 - Console: Загрузка постов и комментариев выполняется при [первом запуске](#title1) или при выполнении [команды импорта](#title6).  
   Основной файл импорта данных ****src/Infrastructure/Console/Command/ImportCommand.php****
