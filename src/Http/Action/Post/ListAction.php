@@ -27,7 +27,7 @@ final class ListAction implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-         $jsonData = $this->postRepository->findAll();
+        $jsonData = $this->postRepository->findAll();
 
         return new JsonResponse($this->prepareJsonData($jsonData));
     }

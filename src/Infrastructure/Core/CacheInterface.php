@@ -8,9 +8,9 @@ interface CacheInterface
 {
     /**
      * Creates a connection to the cache server
-     * @return void
+     * @return static
      */
-    public function connect();
+    public function connect(): static;
 
     /**
      * Returns the value for the key

@@ -6,15 +6,11 @@ namespace App\Infrastructure\Core;
 
 use App\Infrastructure\Core\CacheInterface;
 use App\Infrastructure\Core\RedisCache;
-use Redis;
 
 final class CacheFactory implements CacheFactoryInterface
 {
     public function create(): CacheInterface
     {
-        $cache = new RedisCache(new Redis());
-        $cache->connect();
-
-        return $cache;
+        return (new RedisCache())->connect();
     }
 }

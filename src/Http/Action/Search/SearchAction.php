@@ -51,13 +51,11 @@ final class SearchAction implements RequestHandlerInterface
             throw new BadRequestHttpException('The length of the `need` parameter must be ' . $_ENV['VITE_MIN_SEARCH_LENGTH'] . ' or more.');
         }
 
-        $page = $queryParams['page'] ?? 1;
-
         $hash = md5($need);
         if  ($this->cache->has($hash)) {
             $data = $this->cache->get($hash);
         } else {
-            $data = $this->searchRepository->search($need, $this->offset($page), self::NUM_PER_PAGE);
+            $data = $this->searchRepository->search($need, $this->offset($queryParams['page'] ?? 1), self::NUM_PER_PAGE);
             if (!empty($data)) {
                 $this->cache->set($hash, $data);
             }
@@ -67,7 +65,7 @@ final class SearchAction implements RequestHandlerInterface
     }
 
     /**
-     * Calculates LIMIT OFFSET for a SQL query
+     * Calculates LIMIT OFFSET for current page
      * @param int $page page number, minimum 1
      * @return int
      */

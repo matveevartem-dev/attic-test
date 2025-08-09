@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\Search;
 
+use App\Model\Comment\Comment;
 use JsonSerializable;
 use stdClass;
 
@@ -11,17 +12,16 @@ final class SearchResult implements JsonSerializable
 {
     /**
      * @param int $id
-     * @param int $postId
-     * @param string $title
-     * @param string $body
+     * @param int $title
+     * @param string $email
+     * @param Comment[] $comments
      */
 
     public function __construct(
         private int $id,
-        private int $postId,
+        private string $title,
         private string $email,
-        private string $name,
-        private string $body
+        private array $comments,
     ) {
     }
 
@@ -36,41 +36,51 @@ final class SearchResult implements JsonSerializable
     /**
      * @return int
      */
-    public function getPostId(): int
+    public function getTitle(): int
     {
-        return $this->postId;
+        return $this->title;
     }
 
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getEmail(): string
     {
-        return $this->name;
+        return $this->email;
     }
 
     /**
-     * @return string
+     * @return Comment[]
      */
-    public function getBody(): string
+    public function getComments(): array
     {
-        return $this->body;
+        return $this->comments;
     }
 
+    /**
+     * Creates SearchResult from stdClass
+     * @param \stdClass $object
+     * @throws \InvalidArgumentException
+     * @return SearchResult
+     */
     public static function fromObject(stdClass $object): self
     {
-        foreach (['id', 'postId', 'email','name','body'] as $key) {
+        foreach (['pid', 'email', 'title', 'comments'] as $key) {
             if (!property_exists($object, $key)) {
                 throw new \InvalidArgumentException(sprintf('%s', $key));
             }
         }
 
+        $comments = [];
+        foreach (json_decode($object->comments, true) as $comment) {
+            $comments[] = Comment::fromArray(array_merge(['pid' => $object->pid], $comment));
+        }
+
         return new self(
-                $object->id,
-                $object->postId,
+                $object->pid,
+                $object->title,
                 $object->email,
-                $object->name,
-                $object->body
+                $comments,
             );
     }
 
@@ -81,10 +91,9 @@ final class SearchResult implements JsonSerializable
     {
         return [
             'id' => $this->id,
-            'postId' => $this->postId,
+            'title' => $this->title,
             'email' => $this->email,
-            'title' => $this->name,
-            'body' => $this->body,
+            'comments' => $this->comments,
         ];
     }
 }

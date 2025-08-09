@@ -104,6 +104,29 @@ final class Comment implements ModelInterface
     }
 
     /**
+     * Creates Comment from array
+     * @param array $data
+     * @throws \InvalidArgumentException
+     * @return Comment
+     */
+    public static function fromArray(array $data): self
+    {
+        foreach (['pid', 'id', 'email', 'name', 'body'] as $key) {
+            if (!key_exists($key, $data)) {
+                throw new \InvalidArgumentException(sprintf('%s', $key));
+            }
+        }
+
+        return new self(
+                $data['pid'],
+                $data['id'],
+                $data['email'],
+                $data['name'],
+                $data['body']
+            );
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function jsonSerialize(): array

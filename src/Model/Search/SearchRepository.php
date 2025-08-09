@@ -8,32 +8,28 @@ use App\Infrastructure\Core\DatabaseInterface;
 use App\Model\Search\SearchResult;
 use Doctrine\ORM\EntityManager;
 use PDO;
-use Psr\Container\ContainerInterface;
 
 use function array_values;
 
 final class SearchRepository
 {
-    /**
-     * @var array<int, SearchResult>
-     */
     private EntityManager|PDO $connection;
 
-    /**
-     * @param array<int, SearchResult>|null $comments
-     */
-    public function __construct(private ContainerInterface $container, private DatabaseInterface $db)
+    public function __construct(private DatabaseInterface $db)
     {
         $this->connection = $db->getConnecion();
     }
 
     /**
+     * @param string $need search word
+     * @param int $offset search offset, default 0
+     * @param int $limit search limit, by default this is the maximum value of the int type
      * @return SearchResult[]
      */
     public function search(
         string $need,
         int $offset = 0,
-        int $limit = 9223372036854775807
+        int $limit = PHP_INT_MAX
     ): array {
         $query = <<<SQL
             SELECT
@@ -52,30 +48,21 @@ final class SearchRepository
             WHERE
                 MATCH (c.body) AGAINST (:need IN BOOLEAN MODE)
             GROUP BY c.post_id
-            LIMIT {$offset}, {$limit};
+            LIMIT :offset, :limit;
         SQL;
 
         $stm = $this->connection->prepare($query);
         $stm->bindParam(':need', $need, PDO::PARAM_STR);
-        $stm->setFetchMode(PDO::FETCH_ASSOC);
+        $stm->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stm->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stm->setFetchMode(PDO::FETCH_OBJ);
         $stm->execute();
 
         $data = [];
-
         while ($item = $stm->fetch()) {
-            $data[] = $this->toPdo($item);
+            $data[] = SearchResult::fromObject($item);
         }
 
         return array_values($data);
-    }
-
-    private function toPdo(array $item)
-    {
-        return [
-            'id' => $item['pid'],
-            'title' => $item['title'],
-            'email' => $item['email'],
-            'comments' => json_decode($item['comments'])
-        ];
     }
 }
