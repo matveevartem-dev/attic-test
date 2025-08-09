@@ -18,7 +18,7 @@ final class SearchAction implements RequestHandlerInterface
 {
     use PrepareJsonDataTrait;
 
-    private const int NUM_PER_PAGE = 10;
+    private const int NUM_PER_PAGE = 100;
 
     /**
      * @param CacheInterface $cache
