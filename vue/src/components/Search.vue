@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { reactive, watch, ref } from 'vue'
   import { debounceFilter, watchWithFilter } from '@vueuse/core'
-  import debounce from 'lodash/debounce'
   import axios from 'axios'
   import Result from './Result.vue'
 
@@ -12,11 +11,14 @@
       submitButton: 'Search',
   })
 
+  const pageSize = import.meta.env.VITE_PAGE_SIZE ?? 1000
+
   const update = () => {
-    if (!searchBtnEnabled()) {
+    if (!searchBtnDisabled()) {
       axios.get(import.meta.env.VITE_API_URL + '/search', {
         params: {
           need: form.searchQuery,
+          page: currentPage
         }
       }).
       then(response => {
@@ -28,8 +30,30 @@
     }
   }
 
-  const searchBtnEnabled = () => {
+  var currentPage = 1
+
+  const pagePrev = () => {
+    if (--currentPage < 1) {
+      currentPage = 1
+    }
+    update()
+  }
+
+  const pageNext = () => {
+    ++currentPage
+    update()
+  }
+
+  const searchBtnDisabled = () => {
     return form.searchQuery !== null && form.searchQuery.length < import.meta.env.VITE_MIN_SEARCH_LENGTH;
+  }
+
+  const isFirstPage = () => {
+    return searchBtnDisabled() || (currentPage === 1)
+  }
+
+  const isLastPage = () => {
+    return searchBtnDisabled() || (result.value.length < pageSize)
   }
 
   watchWithFilter(
@@ -45,10 +69,14 @@
   <div class="searchForm">
     <span class="searchIcon"><i class="fa fa-search"></i></span>
     <input type="search" id="searchInput" class="searchInput" placeholder="Enter text here" v-model="form.searchQuery"/>
-    <input type="submit" id="submitButton" class="searchButton" @click="update()" :disabled="searchBtnEnabled()" v-model="form.submitButton"/>
+    <input type="submit" id="submitButton" class="searchButton" @click="update()" :disabled="searchBtnDisabled()" v-model="form.submitButton"/>
+  </div>
+  <div class="resultPagination">
+    <button @click="pagePrev()" :disabled="isFirstPage()">Prev</button>
+    <button @click="pageNext()" :disabled="isLastPage()">Next</button>
   </div>
   <div class="resultSearch">
-    <Result :result="result" />
+    <Result :result="result",  />
   </div>
 </template>
 
@@ -144,5 +172,22 @@
 
 .resultSearch {
   margin-top: 2rem;
+}
+
+.resultPagination {
+  padding-top: 0.5rem;
+  padding-left: 1rem;
+
+  & button {
+    color: #ffffff77;
+    padding-left: 1em;
+    padding-right: 1em;
+    background-color: transparent;
+
+    &:hover:enabled {
+      cursor: pointer;
+      color: #ffffffdd;
+    }
+  }
 }
 </style>

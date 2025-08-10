@@ -18,7 +18,7 @@ final class SearchAction implements RequestHandlerInterface
 {
     use PrepareJsonDataTrait;
 
-    private const int NUM_PER_PAGE = 100;
+    private int $per_page;
 
     /**
      * @param CacheInterface $cache
@@ -28,6 +28,7 @@ final class SearchAction implements RequestHandlerInterface
         private CacheInterface $cache,
         private SearchRepository $searchRepository
     ) {
+        $this->per_page = (int) ($_ENV['VITE_PAGE_SIZE'] ?? 1000);
     }
 
     /**
@@ -51,11 +52,13 @@ final class SearchAction implements RequestHandlerInterface
             throw new BadRequestHttpException('The length of the `need` parameter must be ' . $_ENV['VITE_MIN_SEARCH_LENGTH'] . ' or more.');
         }
 
-        $hash = md5($need);
+        $page = (int) ($queryParams['page'] ?? 1);
+
+        $hash = md5($page . $need);
         if  ($this->cache->has($hash)) {
             $data = $this->cache->get($hash);
         } else {
-            $data = $this->searchRepository->search($need, $this->offset($queryParams['page'] ?? 1), self::NUM_PER_PAGE);
+            $data = $this->searchRepository->search($need, $this->offset($page), $this->per_page);
             if (!empty($data)) {
                 $this->cache->set($hash, $data);
             }
@@ -75,6 +78,6 @@ final class SearchAction implements RequestHandlerInterface
             throw new BadRequestHttpException('The page number must be greater than one');
         }
 
-        return ($page - 1) * self::NUM_PER_PAGE;
+        return ($page - 1) * $this->per_page;
     }
 }
